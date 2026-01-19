@@ -1,0 +1,272 @@
+.containerTudo{
+  margin: 0px 10vw;
+  display: grid;
+  grid-template-columns: 2fr 8fr;
+  gap: 24px;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 24px 0
+}
+
+.conteudo {
+  flex: 1;
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.titulo {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #1a2b4c;
+}
+
+.inputBusca {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cdd4e0;
+  background-color: #CBCBCB;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: black;
+}
+
+.selectFiltro {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cdd4e0;
+  margin-bottom: 24px;
+  font-size: 16px;
+  background: #CBCBCB;
+  color: black;
+}
+
+.listaMeses {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mesBloco {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.mesTitulo {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+.itemExtrato {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.itemExtrato:last-child {
+  border-bottom: none;
+}
+
+.descricao {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0062c4;
+}
+
+.data {
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+.valor {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.positivo {
+  color: #27ae60;
+}
+
+.negativo {
+  color: #c0392b;
+}
+
+.filtrosLinha {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.contadorResultados {
+  margin: 20px 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #0062c4;
+  font-size: 14px;
+  color: #555;
+}
+
+.contadorResultados p {
+  margin: 0;
+}
+
+.semResultados {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+  font-size: 16px;
+}
+
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+  padding: 20px 0;
+  border-top: 1px solid #e6e6e6;
+}
+
+.numerosPagina {
+  display: flex;
+  gap: 4px;
+}
+
+.botaoPagina {
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s ease;
+  min-width: 40px;
+  text-align: center;
+}
+
+.botaoPagina:hover:not(.desabilitado):not(.paginaAtual) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.botaoPagina.paginaAtual {
+  background-color: #0062c4;
+  color: white;
+  border-color: #0062c4;
+  font-weight: bold;
+}
+
+.botaoPagina.desabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 1024px) {
+  .containerTudo {
+    margin: 0 4vw;
+    grid-template-columns: 1fr 3fr;
+    gap: 16px;
+  }
+
+  .conteudo {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .titulo {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .containerTudo {
+    grid-template-columns: 1fr;
+    margin: 0 4vw;
+    padding: 16px 0;
+  }
+
+  .conteudo {
+    padding: 12px;
+  }
+
+  .filtrosLinha {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .titulo {
+    font-size: 26px;
+    text-align: center;
+  }
+
+  .paginacao {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .numerosPagina {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .containerTudo {
+    margin: 0 2vw;
+  }
+
+  .conteudo {
+    padding: 8px;
+  }
+
+  .titulo {
+    font-size: 22px;
+  }
+
+  .inputBusca,
+  .selectFiltro {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .mesBloco {
+    padding: 12px;
+  }
+
+  .itemExtrato {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .valor {
+    font-size: 15px;
+  }
+
+  .descricao {
+    font-size: 15px;
+  }
+
+  .paginacao {
+    padding: 12px 0;
+  }
+
+  .botaoPagina {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
