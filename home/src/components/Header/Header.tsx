@@ -15,7 +15,6 @@ export default function HeaderComponente(props: HeaderProps) {
   function handleLogout() {
     logout();
 
-    // 🔥 redirecionamento ENTRE microfrontends
     window.location.href = "http://localhost:3001/";
   }
 
