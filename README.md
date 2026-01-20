@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://github.com/Excalibur757/docker-mf">
-    Tech Challenge - Fase 02: Gerenciador Financeiro INCREMENTADO
+    Tech Challenge - Fase 02: Gerenciador Financeiro Incrementado
   </a>
 </h1>
 
@@ -11,11 +11,10 @@ A proposta é desenvolver um pacote de melhorias do gerenciador financeiro do pr
 ## 📖 Índice
 
 * 🎯 Sobre o Projeto
-* ✨ Features (Requisitos)
+* ✨ Requisitos
 * 🛠️ Tecnologias Utilizadas
-* 🚀 Começando (Executando o Projeto)
-* 🎨 Design System
-* 🎥 Vídeo Demonstrativo
+* 🚀 Executando o Projeto
+* 🎥 Vídeo
 
 <br />
 
@@ -65,7 +64,7 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 
 <br />
 
-## 🚀 Começando (Executando o Projeto)
+## 🚀 Executando o Projeto
 
 ### Pré-requisitos
 
@@ -100,7 +99,20 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
     ```
 <br />
 
-## 🎥 Vídeo Demonstrativo
+### Credenciais de login
+
+* Para ter o acesso, use as seguintes credenciais:
+
+  1. Email:
+    ```bash
+    aluno@teste.com
+    ```
+  2. Senha:
+    ```bash
+    123456
+    ```
+
+## 🎥 Vídeo
 
 Gravamos um vídeo para demonstrar todo o fluxo e as melhorias solicitadas.
 
