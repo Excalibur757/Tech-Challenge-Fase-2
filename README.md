@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/Excalibur757/docker-mf">
+  <a href="https://github.com/Excalibur757/Tech-Challenge-Fase-2">
     Tech Challenge - Fase 02: Gerenciador Financeiro Incrementado
   </a>
 </h1>
@@ -81,12 +81,12 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 1.  Clone o repositório:
 
     ```bash
-    git clone https://github.com/Excalibur757/docker-mf.git
+    git clone https://github.com/Excalibur757/Tech-Challenge-Fase-2.git
     ```
 2.  Navegue até o diretório do projeto:
 
     ```bash
-    cd docker-mf
+    cd Tech-Challenge-Fase-2
     ```
 
 ### Executando a aplicação
@@ -101,6 +101,7 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
     ```bash
     docker-compose up
     ```
+4. Agora abra [http://localhost:3001](http://localhost:3001) em seu navegador para ver a aplicação.
 <br />
 
 ### Credenciais de login
