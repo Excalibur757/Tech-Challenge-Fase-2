@@ -28,6 +28,10 @@ Focado na construção de uma interface funcional para um app financeiro. Usamos
 
 O projeto segue os seguintes requisitos:
 
+- **Login:**
+  - Página simples para inserir as credenciais de acesso.
+  * Gera token de acesso.
+
 - **Home Page:**
   * Gráficos.
   * Análises financeiras.
@@ -36,9 +40,6 @@ O projeto segue os seguintes requisitos:
  - **Listagem de Transações:**
    - Um container que exibe as últimas transações realizadas.
 
-- **Gerenciamento de Transações:**
-  * Permite **editar** e **deletar** cada transação.
-
 - **Adicionar Nova Transação:**
     - Um container para adicionar novas transações.
   * Formulário com campos para tipo de transação, valor, descrição e upload de documento.
@@ -46,6 +47,11 @@ O projeto segue os seguintes requisitos:
     
 - **Editar Transação:**
   * Um modal para editar os dados de uma transação existente.
+
+- **Extrato:**
+    - Uma página para visualizar todo o extrato.
+  * Possui filtros para pesquisa avançada.
+  * Utiliza paginação.
 
 <br />
 
@@ -57,8 +63,8 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 * [**React**](https://reactjs.org/)**:** Biblioteca principal para a construção da interface.
 * **CSS Modules:** Usado para estilos específicos de páginas ou componentes.
 * **Styled-Components:** Usado para criar componentes de UI reutilizáveis e "tokenizados", que formam o núcleo do nosso sistema.
-* **Docker:** Utilizado para 
-* **Cloud:** Utilizado para rodar sua aplicação na web.
+* **Docker:** Utilizado para empacotar as aplicações e dependências em contêiners portáteis para rodar em qualquer lugar.
+* **Vercel:** Utilizado para rodar sua aplicação na web.
 * **Microfrontends:** Usado para separar as páginas de um site e torná-las independentes, permitindo atualização e desenvolvimento isolado.
 * **Bootstrap:** Utilizado para agilizar o desenvolvimento do layout macro e para classes utilitárias.
 
@@ -68,8 +74,6 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 
 ### Pré-requisitos
 
-* [Node.js](https://nodejs.org/) (versão 18.x ou superior)
-* [Yarn](https://yarnpkg.com/) ou [npm](https://www.npmjs.com/)
 * [docker](https://www.docker.com/products/docker-desktop/)
 
 ### Instalação
@@ -116,7 +120,8 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 
 Gravamos um vídeo para demonstrar todo o fluxo e as melhorias solicitadas.
 
-➡️ [Assista ao vídeo](https://www.youtube.com/watch?v=7yawItuhJDM)
+➡️ [Assista ao vídeo via Drive](https://drive.google.com/file/d/1xo3KwlNb1cEWkj8MhAFFC8-svmkCg3s8/view?usp=sharing)
+➡️ [Assista ao vídeo via YouTube](https://www.youtube.com/watch?v=HCxQpIofsBI)
 
 <br />
 
