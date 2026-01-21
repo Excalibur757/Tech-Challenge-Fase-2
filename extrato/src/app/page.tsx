@@ -12,19 +12,22 @@ export default function ExtratoPage() {
   const router = useRouter();
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [tipo, setTipo] = useState(""); 
+  const [tipo, setTipo] = useState(""); // receita | despesa
   const [valorMin, setValorMin] = useState("");
   const [valorMax, setValorMax] = useState("");
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
 
+  // Estados para paginação
   const [paginaAtual, setPaginaAtual] = useState(1);
-  const [itensPorPagina, setItensPorPagina] = useState(3); 
+  const [itensPorPagina, setItensPorPagina] = useState(3); // 3 meses por página
 
+  // Função para identificar receita ou despesa
   const getTipoFinanceiro = (t: string) => {
     return t === "deposito" ? "receita" : "despesa";
   };
 
+  // FILTRAGEM COMPLETA
   const extratosFiltrados = useMemo(() => {
     return listaExtratos.map((mesObj) => {
       const filtrados = mesObj.extratos.filter((item) => {
@@ -55,16 +58,19 @@ export default function ExtratoPage() {
       });
 
       return { ...mesObj, extratos: filtrados };
-    }).filter(mesObj => mesObj.extratos.length > 0); 
+    }).filter(mesObj => mesObj.extratos.length > 0); // Remove meses sem itens
   }, [busca, categoria, tipo, valorMin, valorMax, dataInicio, dataFim]);
 
+  // Calcular totais para paginação
   const totalMeses = extratosFiltrados.length;
   const totalPaginas = Math.ceil(totalMeses / itensPorPagina);
 
+  // Calcular índices para slice
   const indiceInicio = (paginaAtual - 1) * itensPorPagina;
   const indiceFim = indiceInicio + itensPorPagina;
   const mesesPaginados = extratosFiltrados.slice(indiceInicio, indiceFim);
 
+  // Resetar página quando filtros mudarem
   useEffect(() => {
     setPaginaAtual(1);
   }, [busca, categoria, tipo, valorMin, valorMax, dataInicio, dataFim]);
@@ -79,6 +85,7 @@ export default function ExtratoPage() {
     return <p>Carregando autenticação...</p>;
   }
 
+  // Funções de navegação
   const irParaPagina = (pagina: number) => {
     if (pagina >= 1 && pagina <= totalPaginas) {
       setPaginaAtual(pagina);
@@ -97,6 +104,7 @@ export default function ExtratoPage() {
     }
   };
 
+  // Gerar array de números de página para exibir
   const paginasParaExibir = () => {
     const paginas = [];
     const maxPaginasVisiveis = 5;
@@ -104,6 +112,7 @@ export default function ExtratoPage() {
     let inicio = Math.max(1, paginaAtual - Math.floor(maxPaginasVisiveis / 2));
     let fim = Math.min(totalPaginas, inicio + maxPaginasVisiveis - 1);
     
+    // Ajustar inicio se o fim for limitado
     inicio = Math.max(1, fim - maxPaginasVisiveis + 1);
     
     for (let i = inicio; i <= fim; i++) {
@@ -120,6 +129,7 @@ export default function ExtratoPage() {
       <div className={styles.conteudo}>
         <h1 className={styles.titulo}>Extrato</h1>
 
+        {/* BUSCA */}
         <input
           type="text"
           placeholder="Pesquisar por texto..."
@@ -128,6 +138,7 @@ export default function ExtratoPage() {
           onChange={(e) => setBusca(e.target.value)}
         />
 
+        {/* CATEGORIA */}
         <select
           className={styles.selectFiltro}
           value={categoria}
@@ -141,16 +152,19 @@ export default function ExtratoPage() {
           ))}
         </select>
 
+        {/* TIPO (RECEITA / DESPESA) */}
         <select
           className={styles.selectFiltro}
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
         >
           <option value="">Selecione um tipo</option>
+          {/* <option value="">Todos os tipos</option> */}
           <option value="receita">Receita</option>
           <option value="despesa">Despesa</option>
         </select>
 
+        {/* VALOR */}
         <div className={styles.filtrosLinha}>
           <input
             type="number"
@@ -169,6 +183,7 @@ export default function ExtratoPage() {
           />
         </div>
 
+        {/* DATA */}
         <div className={styles.filtrosLinha}>
           <input
             type="date"
@@ -185,6 +200,7 @@ export default function ExtratoPage() {
           />
         </div>
 
+        {/* Contador de resultados */}
         <div className={styles.contadorResultados}>
           <p>
             Mostrando {Math.min(indiceFim, totalMeses)} de {totalMeses} meses
@@ -192,6 +208,7 @@ export default function ExtratoPage() {
           </p>
         </div>
 
+        {/* LISTA */}
         <div className={styles.listaMeses}>
           {mesesPaginados.map((mesObj) => (
             <div key={mesObj.mes} className={styles.mesBloco}>
@@ -227,6 +244,7 @@ export default function ExtratoPage() {
           )}
         </div>
 
+        {/* PAGINAÇÃO */}
         {totalPaginas > 1 && (
           <div className={styles.paginacao}>
             <button

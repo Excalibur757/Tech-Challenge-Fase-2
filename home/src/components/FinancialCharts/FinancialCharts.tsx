@@ -1,90 +1,88 @@
-"use client";
+import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { palette } from '@/styles/theme/colors';
+import { radii } from '@/styles/theme/radii';
+import { spacing } from '@/styles/theme/spacing';
+import { fontSizes, fontWeights } from '@/styles/theme/typography';
+import { ExtratoMensalType } from '@/utils/transacao';
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-} from "recharts";
+interface GraficoProps {
+  extratos: ExtratoMensalType;
+}
 
-type Extrato = {
-  valor: number;
-  tipo: string;
-};
+export default function Grafico({ extratos }: GraficoProps) {
+  const calcularDadosGrafico = (extratos: ExtratoMensalType) => {
+    let saldo = 1250.50;
+    const dados = [{ mes: 'Inicial', saldo: 1250.50 }];
+    
+    // Processar do mais antigo ao mais recente
+    const extratosOrdenados = [...extratos].reverse();
+    
+    extratosOrdenados.forEach(mes => {
+      mes.extratos.forEach(ext => {
+        if (['deposito', 'estorno'].includes(ext.tipo)) {
+          saldo += ext.valor;
+        } else if (['saque', 'pagamento_boleto', 'recarga_celular'].includes(ext.tipo)) {
+          saldo -= ext.valor;
+        }
+      });
+      dados.push({ mes: mes.mes, saldo: parseFloat(saldo.toFixed(2)) });
+    });
+    
+    return dados;
+  };
 
-type Mes = {
-  mes: string;
-  extratos: Extrato[];
-};
+  const dados = calcularDadosGrafico(extratos);
+  const saldoAtual = dados[dados.length - 1].saldo;
+  const totalTransacoes = extratos.reduce((acc, mes) => acc + mes.extratos.length, 0);
 
-const COLORS = ["#2563eb", "#ef4444", "#22c55e", "#eab308", "#8b5cf6"];
+  const getStatusFinanceiro = () => {
+    if (saldoAtual > 0) return { texto: 'Saldo Positivo', cor: palette.verde500, dica: 'Parabéns! Continue mantendo um bom controle financeiro.' };
+    if (saldoAtual < 0) return { texto: 'Saldo Negativo', cor: palette.laranja500, dica: 'Considere revisar seus gastos e planejar um orçamento para equilibrar as finanças.' };
+    return { texto: 'Sem Movimentações', cor: palette.cinza800, dica: 'Que tal adicionar uma transação para começar a acompanhar seu saldo?' };
+  };
 
-export default function FinancialCharts({ extratos }: { extratos: Mes[] }) {
-  const todos = extratos.flatMap((m) => m.extratos);
-
-  const receita = todos
-    .filter((e) => e.tipo === "deposito")
-    .reduce((acc, e) => acc + e.valor, 0);
-
-  const despesa = todos
-    .filter((e) => e.tipo !== "deposito")
-    .reduce((acc, e) => acc + e.valor, 0);
-
-  const receitaDespesaData = [
-    { name: "Receitas", valor: receita },
-    { name: "Despesas", valor: despesa },
-  ];
-
-  const gastosPorCategoria = Object.values(
-    todos
-      .filter((e) => e.tipo !== "deposito")
-      .reduce((acc: any, cur) => {
-        acc[cur.tipo] = acc[cur.tipo] || { name: cur.tipo, valor: 0 };
-        acc[cur.tipo].valor += cur.valor;
-        return acc;
-      }, {})
-  );
+  const status = getStatusFinanceiro();
 
   return (
-    <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
-      
-      {/* Receita x Despesa */}
-      <div style={{ width: 350, height: 300 }}>
-        <h4 style={{ color: "#2563eb" }}>Receitas x Despesas</h4>
-        <ResponsiveContainer>
-          <BarChart data={receitaDespesaData}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="valor" fill="#2563eb" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Gastos por categoria */}
-      <div style={{ width: 350, height: 300 }}>
-        <h4 style={{ color: "#2563eb" }}>Gastos por Categoria</h4>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={gastosPorCategoria}
-              dataKey="valor"
-              nameKey="name"
-              outerRadius={100}
-              label
-            >
-              {gastosPorCategoria.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
+    <div style={{
+      backgroundColor: palette.branco,
+      borderRadius: radii.sm,
+      padding: spacing.lg,
+      width: 'auto',
+      minHeight: '700px',
+      height: 'auto',
+      margin: spacing.md,
+      boxSizing: 'border-box',
+    }}>
+      <h4 style={{ fontSize: fontSizes.heading, color: palette.azul700, fontWeight: fontWeights.bold, marginBottom: spacing.md }}>
+        Evolução do Saldo
+      </h4>
+      <ResponsiveContainer width="100%" height="70%">
+        <LineChart data={dados}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="mes" />
+          <YAxis />
+          <Tooltip formatter={(value) => [`R$ ${value}`, 'Saldo']} />
+          <Line type="monotone" dataKey="saldo" stroke={palette.azul700} strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
+      <div style={{ marginTop: spacing.md, paddingTop: spacing.md, borderTop: `1px solid ${palette.cinza300}` }}>
+        <h5 style={{ fontSize: fontSizes.body, fontWeight: fontWeights.medium, color: palette.preto, marginBottom: spacing.sm }}>
+          Análise Financeira
+        </h5>
+        <p style={{ fontSize: fontSizes.small, color: palette.preto, margin: 0 }}>
+          Saldo Atual: <span style={{ fontWeight: fontWeights.bold, color: status.cor }}>R$ {saldoAtual.toFixed(2)}</span>
+        </p>
+        <p style={{ fontSize: fontSizes.small, color: palette.preto, margin: 0 }}>
+          Status: <span style={{ fontWeight: fontWeights.bold, color: status.cor }}>{status.texto}</span>
+        </p>
+        <p style={{ fontSize: fontSizes.small, color: palette.preto, margin: 0 }}>
+          Total de Transações: {totalTransacoes}
+        </p>
+        <p style={{ fontSize: fontSizes.small, color: palette.preto, marginTop: 10, fontStyle: 'italic', justifyContent: 'center' }}>
+          Status: {status.dica}
+        </p>
       </div>
     </div>
   );

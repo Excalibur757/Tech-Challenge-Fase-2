@@ -13,131 +13,154 @@ import { palette } from '@/styles/theme/colors'
 import Alerta from '../Alerta/Alerta'
 
 interface ExtratoContainerProps {
-    extratos: ExtratoMensalType;
-    setExtratos: React.Dispatch<React.SetStateAction<ExtratoMensalType>>;
+  extratos: ExtratoMensalType;
+  setExtratos: React.Dispatch<React.SetStateAction<ExtratoMensalType>>;
 }
 
 export default function ExtratoContainer({ extratos, setExtratos }: ExtratoContainerProps) {
-    const [mostrarAlerta, setMostrarAlerta] = useState<boolean>(false);
-    const [mostrarAlertaDelete, setMostrarAlertaDelete] = useState<boolean>(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<ExtratoItemType | null>(null);
+  const [mostrarAlerta, setMostrarAlerta] = useState(false)
+  const [mostrarAlertaDelete, setMostrarAlertaDelete] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<ExtratoItemType | null>(null)
 
-    // quantos meses exibir inicialmente
-    const [visibleMonths, setVisibleMonths] = useState(1);
+  const [visibleMonths, setVisibleMonths] = useState(1)
 
-    // sentinel para o intersection observer
-    const sentinelRef = useRef<HTMLDivElement | null>(null);
-    const listRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const loadingRef = useRef(false)
 
-    // evita múltiplos disparos muito rápidos
-    const loadingRef = useRef(false);
+  useEffect(() => {
+    if (!sentinelRef.current || visibleMonths >= extratos.length) return
 
-    useEffect(() => {
-        if (!sentinelRef.current || visibleMonths >= extratos.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (entry.isIntersecting && !loadingRef.current) {
+          loadingRef.current = true
+          setTimeout(() => {
+            setVisibleMonths(prev =>
+              Math.min(prev + 1, extratos.length)
+            )
+            loadingRef.current = false
+          }, 200)
+        }
+      },
+      {
+        root: listRef.current,
+        rootMargin: '150px',
+        threshold: 0.1,
+      }
+    )
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const entry = entries[0];
-                if (entry.isIntersecting && !loadingRef.current) {
-                    loadingRef.current = true;
-                    // Debounce pequeno
-                    setTimeout(() => {
-                        setVisibleMonths(prev => {
-                            const next = Math.min(prev + 1, extratos.length);
-                            return next;
-                        });
-                        loadingRef.current = false;
-                    }, 200);
-                }
-            },
-            {
-                root: listRef.current,      // OBSERVE dentro do container rolável
-                rootMargin: '150px',       // começa a carregar antes de chegar no fim
-                threshold: 0.1,
-            }
-        );
+    observer.observe(sentinelRef.current)
+    return () => observer.disconnect()
+  }, [extratos.length, visibleMonths])
 
-        observer.observe(sentinelRef.current);
+  const showModal = (item: ExtratoItemType) => {
+    setIsModalOpen(true)
+    setSelectedItem(item)
+  }
 
-        return () => {
-            observer.disconnect();
-        };
-    }, [extratos.length, visibleMonths]);
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
 
-    const showModal = (item: ExtratoItemType) => {
-        setIsModalOpen(true);
-        setSelectedItem(item)
-    };
+  const handleEditFinish = (itemEditado: ExtratoItemType) => {
+    const novosExtratos = editarTransacao(extratos, itemEditado)
+    setExtratos(novosExtratos)
+    setMostrarAlerta(true)
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+    setTimeout(() => setMostrarAlerta(false), 3000)
+    setIsModalOpen(false)
+    setSelectedItem(null)
+  }
 
-    const handleEditFinish = (itemEditado: ExtratoItemType) => {
-        const novosExtratos = editarTransacao(extratos, itemEditado);
-        setExtratos(novosExtratos);
-        setMostrarAlerta(true);
+  const handleDelete = (itemId: number) => {
+    const novosExtratos = removerTransacao(extratos, itemId)
+    setExtratos(novosExtratos)
+    setMostrarAlertaDelete(true)
 
-        setTimeout(() => {
-            setMostrarAlerta(false);
-        }, 3000);
-        setIsModalOpen(false);
-        setSelectedItem(null);
-    };
+    setTimeout(() => setMostrarAlertaDelete(false), 3000)
+  }
 
-    const handleDelete = (itemId: number) => {
-        const novosExtratos = removerTransacao(extratos, itemId);
-        setExtratos(novosExtratos);
-        setMostrarAlertaDelete(true);
-        setTimeout(() => {
-            setMostrarAlertaDelete(false);
-        }, 3000);
-    };
+  const extratosAgrupados = Object.values(
+    extratos
+      .flatMap(mes => mes.extratos)
+      .reduce((acc, item) => {
+        const key = dayjs(item.data).format("YYYY-MM")
 
-    const extratosRecentes = extratos
-    .flatMap(mes => mes.extratos)
-    .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
-    .slice(0, 5); // 👈 quantidade que você quer mostrar
+        if (!acc[key]) {
+          acc[key] = {
+            key,
+            label: dayjs(item.data).format("MMMM / YYYY"),
+            timestamp: dayjs(item.data).startOf("month").valueOf(),
+            extratos: [],
+          }
+        }
 
+        acc[key].extratos.push(item)
+        return acc
+      }, {} as Record<string, {
+        key: string
+        label: string
+        timestamp: number
+        extratos: ExtratoItemType[]
+      }>)
+  ).sort((a, b) => b.timestamp - a.timestamp)
 
-    return (
-        <div className={styles.extratoContainer} style={{backgroundColor: palette.branco}}>
-            {mostrarAlerta && (
-                <Alerta
-                    tipo="aviso"
-                    mensagem="🎉 Sucesso! Transação editada com êxito."
-                />
-            )}
-            {mostrarAlertaDelete && (
-                <Alerta
-                    tipo="alerta"
-                    mensagem="🎉 Sucesso! Transação excluída com êxito."
-                />
-            )}
-            <div className={styles.extratoHeader}>
-                <h1 style={{fontWeight: fontWeights.bold, fontSize: fontSizes.heading, color: palette.azul700}}>
-                    Extrato
-                </h1>
-            </div>
+  return (
+    <div className={styles.extratoContainer} style={{ backgroundColor: palette.branco }}>
+      {mostrarAlerta && (
+        <Alerta tipo="aviso" mensagem="🎉 Sucesso! Transação editada com êxito." />
+      )}
 
-            {/* atribui ref no container rolável */}
-            <div className={styles.extratoLista}>
-            {extratosRecentes.map((item) => (
+      {mostrarAlertaDelete && (
+        <Alerta tipo="alerta" mensagem="🎉 Sucesso! Transação excluída com êxito." />
+      )}
+
+      <div className={styles.extratoHeader}>
+        <h1
+          style={{
+            fontWeight: fontWeights.bold,
+            fontSize: fontSizes.heading,
+            color: palette.azul700
+          }}
+        >
+          Extrato
+        </h1>
+      </div>
+
+      <div className={styles.extratoLista} ref={listRef}>
+        {extratosAgrupados.slice(0, visibleMonths).map((mes) => (
+          <div key={mes.key}>
+            <h5
+              style={{
+                fontWeight: fontWeights.medium,
+                fontSize: fontSizes.small,
+                color: palette.verde500,
+                marginTop: 20
+              }}
+            >
+              {mes.label}
+            </h5>
+
+            {[...mes.extratos]
+              .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+              .map((item) => (
                 <div key={item.id}>
-                    <div className={styles.extratoDia}>
+                  <div className={styles.extratoDia}>
                     <div className={styles.extratoDiaHeader}>
-                    <p style={{ fontSize: fontSizes.body }}>
+                      <p style={{ fontSize: fontSizes.body }}>
                         {item.descricao} - {dayjs(item.data).format("DD/MM/YYYY")}
-                    </p>
+                      </p>
 
-                    <h5 style={{ fontWeight: fontWeights.medium }}>
+                      <h5 style={{ fontWeight: fontWeights.medium }}>
                         {item.tipo !== "deposito" ? "-" : ""} R$ {item.valor}
-                    </h5>
+                      </h5>
                     </div>
 
                     <div style={{ display: "flex", gap: 6 }}>
-                    <Botao
+                      <Botao
                         label=""
                         onClick={() => showModal(item)}
                         prefixo={<Pen />}
@@ -145,9 +168,9 @@ export default function ExtratoContainer({ extratos, setExtratos }: ExtratoConta
                         borderRadius="100%"
                         padding="10px"
                         color={palette.branco}
-                    />
+                      />
 
-                    <Botao
+                      <Botao
                         label=""
                         prefixo={<Trash />}
                         backgroundColor={palette.laranja500}
@@ -155,25 +178,25 @@ export default function ExtratoContainer({ extratos, setExtratos }: ExtratoConta
                         padding="10px"
                         onClick={() => handleDelete(item.id)}
                         color={palette.branco}
-                    />
+                      />
                     </div>
+                  </div>
+
+                  <hr style={{ margin: "6px 0" }} />
                 </div>
+              ))}
+          </div>
+        ))}
 
-                <hr style={{ margin: "6px 0" }} />
-                </div>
-            ))}
+        <div ref={sentinelRef} style={{ height: 1 }} />
+      </div>
 
-            {/* BOTÃO VER MAIS */}
-            <div style={{ marginTop: 12, textAlign: "center" }}>
-                <Botao
-                label="Ver extrato completo"
-                backgroundColor={palette.verde500}
-                onClick={() => window.location.href = "/extrato"}
-                />
-            </div>
-            </div>
-
-            <ModalEditarTransacao isOpen={isModalOpen} onClose={handleCancel} extratoData={selectedItem} onFinish={handleEditFinish} />
-        </div>
-    )
+      <ModalEditarTransacao
+        isOpen={isModalOpen}
+        onClose={handleCancel}
+        extratoData={selectedItem}
+        onFinish={handleEditFinish}
+      />
+    </div>
+  )
 }
