@@ -121,8 +121,8 @@ Este projeto foi construído utilizando as seguintes tecnologias obrigatórias e
 
 Gravamos um vídeo para demonstrar todo o fluxo e as melhorias solicitadas.
 
-➡️ [Assista ao vídeo via Drive](https://drive.google.com/file/d/1xo3KwlNb1cEWkj8MhAFFC8-svmkCg3s8/view?usp=sharing)
-➡️ [Assista ao vídeo via YouTube](https://www.youtube.com/watch?v=HCxQpIofsBI)
+➡️ [Assista ao vídeo via Drive](https://drive.google.com/file/d/1L3WHbnlwSeVGx3RJmoUgYABsTkOXb-tY/view?usp=sharing).
+➡️ [Assista ao vídeo via YouTube](https://youtu.be/xbebpXF6hzg).
 
 <br />
 
