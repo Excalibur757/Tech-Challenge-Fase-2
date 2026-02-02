@@ -270,16 +270,15 @@ function validarDescricao(texto: string) {
               >
                 Nova transação
               </h4>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "12px 0" }}>
-                <label style={{ fontSize: 12, fontWeight: 600 }}>
-                  DESEJA FAZER UPLOAD DA TRANSAÇÃO?
-                </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '12px 0' }}>
+                <label style={{ fontSize: 12, fontWeight: 600 }}>DESEJA FAZER UPLOAD DA TRANSAÇÃO?</label>
 
                 <button
                   type="button"
                   role="switch"
                   aria-checked={fazerUpload}
                   onClick={() => handleToggleChange(!fazerUpload)}
+                  title="Ativar upload de arquivo para a transação"
                   style={{
                     width: 52,
                     height: 30,
@@ -287,7 +286,7 @@ function validarDescricao(texto: string) {
                     padding: 4,
                     display: "flex",
                     alignItems: "center",
-                    background: fazerUpload ? palette.azul700 : "#cfcfcf",
+                    background: fazerUpload ? palette.azul700 : '#cfcfcf',
                     border: "none",
                     cursor: "pointer",
                   }}
@@ -301,7 +300,7 @@ function validarDescricao(texto: string) {
                       background: "#fff",
                       transform: fazerUpload ? "translateX(22px)" : "translateX(0)",
                       transition: "transform 150ms linear",
-                      boxShadow: "0 1px 3px rgba(0,0,0,1)",
+                      boxShadow: "0 1px 3px rgba(0, 0, 0, 1)",
                     }}
                   />
                 </button>
@@ -374,11 +373,8 @@ function validarDescricao(texto: string) {
                 label="Adicionar nova transação"
                 onClick={submeterTransacao}
                 backgroundColor={palette.azul700}
-                disabled={
-                  !!erroValor ||
-                  !!erroDescricao ||
-                  !valorSelect
-                }
+                disabled={!valorInput || valorInput <= 0 || !descricao || !valorSelect}
+                title="Clique para adicionar a nova transação"
               />
             </div>
 
@@ -437,11 +433,18 @@ function validarDescricao(texto: string) {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 16 }}>
-                <button onClick={cancelarUpload} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #ddd', background: '#fff', cursor: 'pointer', color: '#000000ff' }}>Cancelar</button>
+                <button
+                  onClick={cancelarUpload}
+                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #ddd', background: '#fff', cursor: 'pointer', color: '#000000ff' }}
+                  title="Cancelar o upload e fechar o modal"
+                  >
+                    Cancelar
+                </button>
                 <button
                   onClick={confirmarUpload}
                   disabled={!arquivoSelecionado}
                   style={{ padding: '8px 12px', borderRadius: 8, border: 'none', background: arquivoSelecionado ? palette.azul700 : '#ccc', color: '#000000ff', cursor: arquivoSelecionado ? 'pointer' : 'not-allowed' }}
+                  title="Confirmar o upload do arquivo selecionado"
                 >
                   Confirmar upload
                 </button>
